@@ -170,6 +170,7 @@ int adminInterface(void)
 		ret = sendAndRecv();
 		if(ret < 0)
 		{
+			printf("%s\n", member.attendanceRecord);
 			return -1;
 		}
 		printf("%s", member.attendanceRecord);
@@ -196,7 +197,6 @@ int adminInterface(void)
 		{
 		case AddMember:
 			ret = addMember();
-
 			if(ret < 0)
 			{
 				return -1;
@@ -267,13 +267,25 @@ int userInterface(void)
 			}
 			break;
 		case ModifySelfInformation:
-			modifySelfInfromation();
+			ret = modifySelfInfromation();
+			if(ret < 0)
+			{
+				return -1;
+			}
 			break;
 		case AttendanceSelfRecord:
-			attendanceSelfRecord();
+			ret = attendanceRecord();
+			if(ret < 0)
+			{
+				return -1;
+			}
 			break;
 		case Attendance:
-			attendance();
+			ret = attendance();
+			if(ret < 0)
+			{
+				return -1;
+			}
 			break;
 		case ReturnToPreviousMenu:
 			printf("Are you sure you want to return to the previous menu?(Y/N)\n");
@@ -325,14 +337,18 @@ int viewSomeoneInfromation(void)
 		switch(member.choose)
 		{
 		case ModifyThisMember:
-			ret = modifySelfInfromation();
+			ret = modifySomeoneInfromation();
 			if(ret < 0)
 			{
 				return -1;
 			}
 			break;
 		case AttendanceThisMemberRecord:
-			attendanceSelfRecord();
+			ret = attendanceRecord();
+			if(ret < 0)
+			{
+				return -1;
+			}
 			break;
 		case ReturnToPreviousMenu:
 			printf("Are you sure you want to return to the previous menu?(Y/N)\n");
@@ -456,16 +472,17 @@ int deleteMember()
 		ret = sendAndRecv();
 		if(ret < 0)
 		{
+			printf("%s\n", member.attendanceRecord);
 			return -1;
 		}
 		if(member.choose < 0)
-	
+
 		{
 			printf("**************\nDelete error\n**************\n");
 			sleep(3);
 			return 0;
 		}
-		
+
 		printf("Delete successful\n");
 		sleep(3);
 		return 0;
@@ -479,51 +496,200 @@ int addMember()
 	char loginChoose;
 	int ret;
 	int choose = 0;
-	while(1)
-	{
-		memset(&member, 0, sizeof(member));
-		printf("please enter add member infromation\n");
-		printf("member name:\n>>");
-		scanf("%s", member.name);
-		if(getchar()!='\n');
-		printf("member age:\n>>");
-		scanf("%d", &member.age);
-		if(getchar()!='\n');
-		printf("member sex:\n>>");
-		scanf("%c", &member.sex);
-		if(getchar()!='\n');
-		printf("member username:\n>>");
-		scanf("%s", member.username);
-		if(getchar()!='\n');
-		printf("member code:\n>>");
-		scanf("%s", member.code);
-		if(getchar()!='\n');
-		printf("member phone:\n>>");
-		scanf("%s", member.phone);
-		if(getchar()!='\n');
-		printf("member position:\n>>");
-		scanf("%s", member.position);
-		if(getchar()!='\n');
-		printf("member salary:\n>>");
-		scanf("%lf", &member.salary);
-		if(getchar()!='\n');
-
-		ret = sendAndRecv();
-		if(ret < 0)
+	while(1){
+		printf("Do you want to add members or admin\n");
+		printf("1.member\n2.admin\n");
+		printf("0.Return to the previous menu\n");
+		printf("Enter 'q' to exit system\n>>");
+		if(scanf("%d", &choose) == 0)
 		{
+			printf("System exiting....\n");
 			return -1;
 		}
-		system("clear");
-		if(member.choose  < 0)
+		if(getchar()!='\n');
+		switch(choose)
 		{
-			fprintf(stderr, "**********\nAdd error\n**********\n");
-		}else{
-			printf("Add successful\n");
+		case 1:
+			memset(&member, 0, sizeof(member));
+			printf("please enter add member infromation\n");
+			printf("member name:\n>>");
+			scanf("%s", member.name);
+			if(getchar()!='\n');
+			printf("member age:\n>>");
+			scanf("%d", &member.age);
+			if(getchar()!='\n');
+			printf("member sex:\n>>");
+			scanf("%c", &member.sex);
+			if(getchar()!='\n');
+			printf("member username:\n>>");
+			scanf("%s", member.username);
+			if(getchar()!='\n');
+			printf("member code:\n>>");
+			scanf("%s", member.code);
+			if(getchar()!='\n');
+			printf("member phone:\n>>");
+			scanf("%s", member.phone);
+			if(getchar()!='\n');
+			printf("member position:\n>>");
+			scanf("%s", member.position);
+			if(getchar()!='\n');
+			printf("member salary:\n>>");
+			scanf("%lf", &member.salary);
+			if(getchar()!='\n');
+			member.choose = ADD_CHOOSE; 
+			member.identifier = 'm';
+
+			ret = sendAndRecv();
+			if(ret < 0)
+			{
+				printf("%s\n", member.attendanceRecord);
+				return -1;
+			}
+			system("clear");
+			if(member.choose  < 0)
+			{
+				fprintf(stderr, "**********\nAdd error\n**********\n");
+			}else{
+				printf("Add successful\n");
+			}
+			break;
+		case 2:
+			memset(&member, 0, sizeof(member));
+			printf("please enter add admin infromation\n");
+			printf("admin username:\n>>");
+			scanf("%s", member.username);
+			if(getchar()!='\n');
+			printf("admin code:\n>>");
+			scanf("%s", member.code);
+			if(getchar()!='\n');
+			member.identifier = ADMIN;
+			member.choose = ADD_CHOOSE;
+			ret = sendAndRecv();
+			if(ret < 0)
+			{
+				printf("%s\n",member.attendanceRecord);
+				return -1;
+			}
+			system("clear");
+			if(member.choose  < 0)
+			{
+				fprintf(stderr, "**********\nAdd error\n**********\n");
+			}else{
+				printf("Add successful\n");
+			}
+			break;
+		case ReturnToPreviousMenu:
+			printf("Are you sure you want to return to the previous menu?(Y/N)\n");
+			scanf("%c", &loginChoose);
+			if(getchar()!='\n');
+			if(loginChoose == 'y' || loginChoose == 'Y')
+			{
+				system("clear");
+				return 0;
+			}
+			break;
+		default:
+			printf("enter error, please try again\n");
+			break;
 		}
+	}
+}
+
+int attendanceRecord(void)
+{
+	char loginChoose;
+	int choose;
+	int ret = -1;
+	printf("********Today's attendance record*********\n");
+	printf("%s", member.attendanceRecord);
+	while(1)
+	{
+		printf("Please enter your choose\n");
+		printf("1.Show the attendance record of the last 30 days\n");
+		printf("0.Return to the previous menu\n");
+		printf("Enter 'q' to exit system\n>>");
+		if(scanf("%d", &member.choose) == 0)
+		{
+			printf("System exiting....\n");
+			return -1;
+		}
+		if(getchar()!='\n');
+		if(member.choose != 0)
+		{
+			member.choose += 7;
+		}
+		switch(member.choose)
+		{
+		case SHOWLAST30RECORD:
+			member.choose = ATTENDANCE_30;
+			ret = sendAndRecv();
+			if(ret < 0)
+			{
+				printf("%s\n", member.attendanceRecord);
+				return -1;
+			}
+			printf("********Last 30 days attendance record*********\n");
+			printf("%s", member.attendanceRecord);
+			printf("Please enter your choose\n");
+			printf("0.Return to the previous menu\n");
+			printf("Enter 'q' to exit system\n>>");
+			if(scanf("%d", &choose) == 0)
+			{
+				printf("System exiting....\n");
+				return -1;
+			}
+			break;
+		case ReturnToPreviousMenu:
+			printf("Are you sure you want to return to the previous menu?(Y/N)\n");
+			scanf("%c", &loginChoose);
+			if(getchar()!='\n');
+			if(loginChoose == 'y' || loginChoose == 'Y')
+			{
+				system("clear");
+				return 0;
+			}
+			break;
+		default:
+			printf("enter error, please try again\n");
+			break;
+		}
+	}
+	return 0;
+}
+
+int viewSelfInfromation()
+{
+	int choose;
+	int ret = -1;
+	ret = returnMemberInfromation(member.name);
+	if(ret < 0)
+	{
+		return -1;
+	}
+	printf("Please enter your choose\n");
+	printf("0.Return to the previous menu\n");
+	printf("Enter 'q' to exit system\n>>");
+	if(scanf("%d", &choose) == 0)
+	{
+		printf("System exiting....\n");
+		return -1;
+	}
+	return 0;
+}
+
+int modifySelfInfromation(void)
+{
+	char loginChoose;
+	int ret = -1;
+	int choose;
+	char str[40];
+	const int idnumber = member.idnumber;
+	if(member.choose == 8)
+	{
 		while(1)
 		{
-			printf("Please enter your choose\n");
-			printf("1.Keep adding\n");
+			printf("Please enter the selection to determine the information you want to modify\n\n");
+			printf("1.username 2.code 3.phone\n");
 			printf("0.Return to the previous menu\n");
 			printf("Enter 'q' to exit system\n>>");
 			if(scanf("%d", &choose) == 0)
@@ -532,41 +698,82 @@ int addMember()
 				return -1;
 			}
 			if(getchar()!='\n');
-
-			if(choose == 1)
+			switch(choose)
 			{
+			case username:
+				printf("Original username : %s\n", member.username);
+				printf("New username >>");
+				memset(str, 0, sizeof(str));
+				memset(&member, 0, sizeof(member));
+				scanf("%s", str);
+				if(getchar()!='\n');
+				strcpy(member.username, str);
+				member.choose = ModifyUsername;
+				member.idnumber = idnumber;
+				ret = sendAndRecv();
+				if(ret < 0)
+				{
+					printf("%s\n", member.attendanceRecord);
+					return -1;
+				}
+				printf("modify successful\n");
 				break;
-			}
-			else if(choose == 0){
+			case code:
+				printf("Original code : %s\n", member.code);
+				printf("New code >>");
+				memset(str, 0, sizeof(str));
+				memset(&member, 0, sizeof(member));
+				scanf("%s", str);
+				if(getchar()!='\n');
+				strcpy(member.code, str);
+				member.choose = ModifyCode;
+				member.idnumber = idnumber;
+				ret = sendAndRecv();
+				if(ret < 0)
+				{
+					printf("%s\n", member.attendanceRecord);
+					return -1;
+				}
+				printf("modify successful\n");
+				break;
+			case phone:
+				printf("Original phone : %s\n", member.phone);
+				printf("New phone >>");
+				memset(str, 0, sizeof(str));
+				memset(&member, 0, sizeof(member));
+				scanf("%s", str);
+				if(getchar()!='\n');
+				strcpy(member.phone, str);
+				member.choose = ModifyPhone;
+				member.idnumber = idnumber;
+				ret = sendAndRecv();
+				if(ret < 0)
+				{
+					printf("%s\n", member.attendanceRecord);
+					return -1;
+				}
+				printf("modify successful\n");
+				break;
+			case ReturnToPreviousMenu:
 				printf("Are you sure you want to return to the previous menu?(Y/N)\n");
 				scanf("%c", &loginChoose);
 				if(getchar()!='\n');
 				if(loginChoose == 'y' || loginChoose == 'Y')
 				{
-		
 					system("clear");
 					return 0;
 				}
-			}else{
+				break;
+			default:
 				printf("enter error, please try again\n");
-				continue;
+				break;
 			}
 		}
 	}
-}
-
-void attendanceRecord()
-{
-
-}
-
-int viewSelfInfromation()
-{
-
 	return 0;
 }
 
-int modifySelfInfromation(void)
+int modifySomeoneInfromation(void)
 {
 	char loginChoose;
 	int ret = -1;
@@ -602,6 +809,7 @@ int modifySelfInfromation(void)
 				ret = sendAndRecv();
 				if(ret < 0)
 				{
+					printf("%s\n", member.attendanceRecord);
 					return -1;
 				}
 				printf("modify successful\n");
@@ -619,6 +827,7 @@ int modifySelfInfromation(void)
 				ret = sendAndRecv();
 				if(ret < 0)
 				{
+					printf("%s\n", member.attendanceRecord);
 					return -1;
 				}
 				printf("modify successful\n");
@@ -636,6 +845,7 @@ int modifySelfInfromation(void)
 				ret = sendAndRecv();
 				if(ret < 0)
 				{
+					printf("%s\n", member.attendanceRecord);
 					return -1;
 				}
 				printf("modify successful\n");
@@ -653,6 +863,7 @@ int modifySelfInfromation(void)
 				ret = sendAndRecv();
 				if(ret < 0)
 				{
+					printf("%s\n", member.attendanceRecord);
 					return -1;
 				}
 				printf("modify successful\n");
@@ -670,6 +881,7 @@ int modifySelfInfromation(void)
 				ret = sendAndRecv();
 				if(ret < 0)
 				{
+					printf("%s\n", member.attendanceRecord);
 					return -1;
 				}
 				printf("modify successful\n");
@@ -685,6 +897,7 @@ int modifySelfInfromation(void)
 				ret = sendAndRecv();
 				if(ret < 0)
 				{
+					printf("%s\n", member.attendanceRecord);
 					return -1;
 				}
 				printf("modify successful\n");
@@ -700,6 +913,7 @@ int modifySelfInfromation(void)
 				ret = sendAndRecv();
 				if(ret < 0)
 				{
+					printf("%s\n", member.attendanceRecord);
 					return -1;
 				}
 				printf("modify successful\n");
@@ -738,23 +952,66 @@ int modifySelfInfromation(void)
 	return 0;
 }
 
-void attendanceSelfRecord(void)
-{
-
-}
-
 Numorname numberOrName(const char* str)
 {
-	//int i;
+	int i;
+	char name[40] = "";
+	char number[40] = "";
+	char *na = name;
+	char *nu = number;
 	Numorname non;
-	//	for(i=0;i<strlen(str);i++)
-	//	{
-	//if(name[i])
-	//	}
+	printf("%s\n",str);
+	printf("%d\n",strlen(str));
+	for(i=0;i<strlen(str);i++)
+	{
+		if(str[i] >= '0' && str[i] <= '9')
+		{
+			*nu++ = str[i];
+		}
+		*na++ = str[i];
+	}
+	*nu = '\0';
+	*na = '\0';
+	if(strlen(number) == 0)
+	{
+		strcpy(non.str, name);
+		non.flag = ISNAME;
+	}
+	else
+	{
+		non.str[0] = '\0';
+		non.idnumber = atoi(number);
+		non.flag = ISIDNUMBER;
+	}
+
 	return non;
 }
 
-void attendance(void)
+int attendance(void)
 {
-
+	int choose;
+	int ret = -1;
+	ret = sendAndRecv();
+	if(ret < 0)
+	{
+		printf("%s\n", member.attendanceRecord);
+		return -1;
+	}
+	if(member.choose < 0)
+	{
+		printf("Attendance Error, please try again!\n");
+	}else
+	{
+		printf("Attendance successful!\nAttendance time is : %s\n", member.attendanceRecord);
+	}
+	printf("Please enter your choose\n");
+	printf("0.Return to the previous menu\n");
+	printf("Enter 'q' to exit system\n>>");
+	if(scanf("%d", &choose) == 0)
+	{
+		printf("System exiting....\n");
+		return -1;
+	}
+	if(getchar()!='\n');
+	return 0;
 }

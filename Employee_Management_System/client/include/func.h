@@ -12,14 +12,16 @@
 #include <netinet/in.h>
 #include <errno.h>
 
+#define ADD_CHOOSE 103
 #define LOGIN 100
 #define DELETE_CHOOSE 101
 #define SERVER_ADDR "192.168.31.54"
 #define SERVER_PORT 2021
+#define ATTENDANCE_30 102
+#define SHOWLAST30RECORD 1
 
 #define TCPON 1
 #define ADMIN 'a'
-
 
 typedef struct employeeInformation
 {
@@ -98,6 +100,9 @@ int interactiveSystem(void);
 //时间显示
 void nowtime(void);
 
+//管理员修改信息
+int modifySomeoneInfromation(void);
+
 //管理员界面
 int adminInterface(void);
 
@@ -111,16 +116,13 @@ int addMember(void);
 int deleteMember(void);
 
 //管理员查看考勤记录
-void attendanceRecord(void);
+int attendanceRecord(void);
 
 //用户查看自己的信息
 int viewSelfInfromation(void);
 
 //用户修改自己的信息
 int modifySelfInfromation(void);
-
-//用户查看自己的打卡信息
-void attendanceSelfRecord(void);
 
 //查看某人信息
 int viewSomeoneInfromation(void);
@@ -132,7 +134,7 @@ Numorname numberOrName(const char* str);
 int returnMemberInfromation(const char *str);
 
 //打卡
-void attendance(void);
+int attendance(void);
 
 //发送并接受服务器的数据
 int sendAndRecv(void);
