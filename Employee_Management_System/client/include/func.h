@@ -79,6 +79,11 @@ enum{
 };
 
 enum{
+	ADDMember = 1,
+	ADDAdmin
+};
+
+enum{
 	ModifyName = 200,
 	ModifyAge,
 	ModifySex,

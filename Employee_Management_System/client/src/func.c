@@ -427,7 +427,7 @@ int sendAndRecv(void)
 	}while(ret < 0 && errno == EINTR);
 	if(ret < 0)
 	{
-		perror("write");
+		perror("send");
 		return -1;
 	}
 
@@ -437,7 +437,7 @@ int sendAndRecv(void)
 	}while(ret < 0 && errno == EINTR);
 	if(ret < 0)
 	{
-		perror("read");
+		perror("recv");
 		return -1; 
 	}
 	else if(ret == 0)
@@ -476,13 +476,13 @@ int deleteMember()
 			return -1;
 		}
 		if(member.choose < 0)
-
+	
 		{
 			printf("**************\nDelete error\n**************\n");
 			sleep(3);
 			return 0;
 		}
-
+		
 		printf("Delete successful\n");
 		sleep(3);
 		return 0;
@@ -509,7 +509,7 @@ int addMember()
 		if(getchar()!='\n');
 		switch(choose)
 		{
-		case 1:
+		case ADDMember:
 			memset(&member, 0, sizeof(member));
 			printf("please enter add member infromation\n");
 			printf("member name:\n>>");
@@ -542,7 +542,7 @@ int addMember()
 			ret = sendAndRecv();
 			if(ret < 0)
 			{
-				printf("%s\n", member.attendanceRecord);
+			printf("%s\n", member.attendanceRecord);
 				return -1;
 			}
 			system("clear");
@@ -553,7 +553,7 @@ int addMember()
 				printf("Add successful\n");
 			}
 			break;
-		case 2:
+		case ADDAdmin:
 			memset(&member, 0, sizeof(member));
 			printf("please enter add admin infromation\n");
 			printf("admin username:\n>>");
@@ -625,7 +625,7 @@ int attendanceRecord(void)
 			ret = sendAndRecv();
 			if(ret < 0)
 			{
-				printf("%s\n", member.attendanceRecord);
+			printf("%s\n", member.attendanceRecord);
 				return -1;
 			}
 			printf("********Last 30 days attendance record*********\n");
@@ -713,7 +713,7 @@ int modifySelfInfromation(void)
 				ret = sendAndRecv();
 				if(ret < 0)
 				{
-					printf("%s\n", member.attendanceRecord);
+			printf("%s\n", member.attendanceRecord);
 					return -1;
 				}
 				printf("modify successful\n");
@@ -731,7 +731,7 @@ int modifySelfInfromation(void)
 				ret = sendAndRecv();
 				if(ret < 0)
 				{
-					printf("%s\n", member.attendanceRecord);
+			printf("%s\n", member.attendanceRecord);
 					return -1;
 				}
 				printf("modify successful\n");
@@ -749,7 +749,7 @@ int modifySelfInfromation(void)
 				ret = sendAndRecv();
 				if(ret < 0)
 				{
-					printf("%s\n", member.attendanceRecord);
+			printf("%s\n", member.attendanceRecord);
 					return -1;
 				}
 				printf("modify successful\n");
@@ -809,7 +809,7 @@ int modifySomeoneInfromation(void)
 				ret = sendAndRecv();
 				if(ret < 0)
 				{
-					printf("%s\n", member.attendanceRecord);
+			printf("%s\n", member.attendanceRecord);
 					return -1;
 				}
 				printf("modify successful\n");
@@ -827,7 +827,7 @@ int modifySomeoneInfromation(void)
 				ret = sendAndRecv();
 				if(ret < 0)
 				{
-					printf("%s\n", member.attendanceRecord);
+			printf("%s\n", member.attendanceRecord);
 					return -1;
 				}
 				printf("modify successful\n");
@@ -845,7 +845,7 @@ int modifySomeoneInfromation(void)
 				ret = sendAndRecv();
 				if(ret < 0)
 				{
-					printf("%s\n", member.attendanceRecord);
+			printf("%s\n", member.attendanceRecord);
 					return -1;
 				}
 				printf("modify successful\n");
@@ -863,7 +863,7 @@ int modifySomeoneInfromation(void)
 				ret = sendAndRecv();
 				if(ret < 0)
 				{
-					printf("%s\n", member.attendanceRecord);
+			printf("%s\n", member.attendanceRecord);
 					return -1;
 				}
 				printf("modify successful\n");
@@ -881,7 +881,7 @@ int modifySomeoneInfromation(void)
 				ret = sendAndRecv();
 				if(ret < 0)
 				{
-					printf("%s\n", member.attendanceRecord);
+			printf("%s\n", member.attendanceRecord);
 					return -1;
 				}
 				printf("modify successful\n");
@@ -897,7 +897,7 @@ int modifySomeoneInfromation(void)
 				ret = sendAndRecv();
 				if(ret < 0)
 				{
-					printf("%s\n", member.attendanceRecord);
+			printf("%s\n", member.attendanceRecord);
 					return -1;
 				}
 				printf("modify successful\n");
@@ -913,7 +913,6 @@ int modifySomeoneInfromation(void)
 				ret = sendAndRecv();
 				if(ret < 0)
 				{
-					printf("%s\n", member.attendanceRecord);
 					return -1;
 				}
 				printf("modify successful\n");
@@ -994,7 +993,6 @@ int attendance(void)
 	ret = sendAndRecv();
 	if(ret < 0)
 	{
-		printf("%s\n", member.attendanceRecord);
 		return -1;
 	}
 	if(member.choose < 0)
