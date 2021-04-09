@@ -1,2 +1,2 @@
 ../bin/serverSystem:main.o func.o
-	gcc $^ -o $@
+	gcc $^ -o $@ -lsqlite3

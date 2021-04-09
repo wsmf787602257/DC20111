@@ -38,7 +38,6 @@ int clientInteraction(int fd)
 
 		//更新maxfd
 		maxfd = updatefds(maxfd, readfds);
-		return -1;
 	}
 	else if(0 == ret)
 	{
@@ -48,14 +47,13 @@ int clientInteraction(int fd)
 
 		//更新maxfd
 		maxfd = updatefds(maxfd, readfds);
-		return -1;
 	}
 	else
 	{
 		ret = sendDataAccordingToChoose(fd);
 		if(ret < 0)
 		{
-			return -1;
+			fprintf(stderr, "sendDataAccordingToChoose error\n");
 		}
 	}
 
@@ -68,45 +66,97 @@ int sendDataAccordingToChoose(int fd)
 	switch(member.choose)
 	{
 	case LOGIN:
-
+		ret = login(fd);
+		if(ret < 0)
+		{
+			fprintf(stderr, "login error\n");
+		}
 		break;
 	case AddMember:
-
+		ret = addMember(fd);
+		if(ret < 0)
+		{
+			fprintf(stderr, "addmember error\n");
+		}
 		break;
 	case DeleteMember:
-
+		ret = deleteMember(fd);
+		if(ret < 0)
+		{
+			fprintf(stderr, "deletemember error\n");
+		}
 		break;
 	case ViewSomeoneInfromation:
-
+		ret = viewSomeoneInformation(fd);
+		if(ret < 0)
+		{
+			fprintf(stderr, "viewSomeoneInformation error\n");
+		}
 		break;
 	case ViewSelfInfromation:
-
+		ret = viewSelfInfromation(fd);
+		if(ret < 0)
+		{
+			fprintf(stderr, "viewSelfInfromation error\n");
+		}
 		break;
 	case ModifySelfInformation:
-
+		ret = modifySelfInformation(fd);
+		if(ret < 0)
+		{
+			fprintf(stderr, "modifySelfInformation error\n");
+		}
 		break;
 	case AttendanceSelfRecord:
-
+		ret = attendanceSelfRecord(fd);
+		if(ret < 0)
+		{
+			fprintf(stderr, "attendanceSelfRecord error\n");
+		}
 		break;
 	case Attendance:
-
+		ret = attendance(fd);
+		if(ret < 0)
+		{
+			fprintf(stderr, "attendance error\n");
+		}
 		break;
 	case ModifyThisMember:
-
+		ret = modifyThisMember(fd);
+		if(ret < 0)
+		{
+			fprintf(stderr, "modifyThisMember error\n");
+		}
 		break;
 	case AttendanceThisMemberRecord:
-
+		ret = attendanceThisMemberRecord(fd);
+		if(ret < 0)
+		{
+			fprintf(stderr, "attendanceThisMemberRecord error\n");
+		}
 		break;
 	case ReturnToPreviousMenu:
 		break;
 	case DELETE_CHOOSE:
-
+		ret = deleteChoose(fd);
+		if(ret < 0)
+		{
+			fprintf(stderr, "deleteChoose error\n");
+		}
 		break;
 	case ATTENDANCE_30:
-
+		ret = attendanceMonth(fd);
+		if(ret < 0)
+		{
+			fprintf(stderr, "attendanceMonth error\n");
+		}
 		break;
 	case ADD_CHOOSE:
-
+		ret = addChoose(fd);
+		if(ret < 0)
+		{
+			fprintf(stderr, "addChoose error\n");
+		}
 		break;
 	default:
 		memset(&member, 0, sizeof(member));
@@ -123,6 +173,100 @@ int sendDataAccordingToChoose(int fd)
 		}
 		break;
 	}
+
+	return 0;
+}
+
+int serverInitSqlite3(void)
+{
+	int ret = -1;
+	employeedb = NULL;	
+
+	ret = sqlite3_open("./employee.db", &employeedb);
+	if(ret < 0)
+	{
+		fprintf(stderr, "%s\n", sqlite3_errmsg(employeedb));
+		return -1;
+	}
+	return 0;
+}
+
+int login(int fd)
+{
+	
+
+	return 0;
+}
+
+int addMember(int fd)
+{
+	
+
+	return 0;
+}
+
+int deleteMember(int fd)
+{
+
+	return 0;
+}
+
+int viewSomeoneInformation(int fd)
+{
+
+	return 0;
+}
+
+int viewSelfInfromation(int fd)
+{
+
+	return 0;
+}
+
+int modifySelfInformation(int fd)
+{
+
+	return 0;
+}
+
+int attendanceSelfRecord(int fd)
+{
+
+	return 0;
+}
+
+int attendance(int fd)
+{
+
+	return 0;
+}
+
+int modifyThisMember(int fd)
+{
+
+	return 0;
+}
+
+int attendanceThisMemberRecord(int fd)
+{
+
+	return 0;
+}
+
+int deleteChoose(int fd)
+{
+
+	return 0;
+}
+
+int attendanceMonth(int fd)
+{
+		
+	return 0;
+}
+
+int addChoose(int fd)
+{
 
 	return 0;
 }

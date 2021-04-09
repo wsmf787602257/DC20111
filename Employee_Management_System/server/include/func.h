@@ -14,6 +14,7 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <sys/epoll.h>
+#include <sqlite3.h>
 
 #define ADD_CHOOSE 103
 #define LOGIN 100
@@ -107,10 +108,39 @@ int clientInteraction(int fd);
 
 int sendDataAccordingToChoose(int fd);
 
+int login(int fd);
+
+int addMember(int fd);
+
+int deleteMember(int fd);
+
+int viewSomeoneInformation(int fd);
+
+int viewSelfInfromation(int fd);
+
+int modifySelfInformation(int fd);
+
+int attendanceSelfRecord(int fd);
+
+int attendance(int fd);
+
+int modifyThisMember(int fd);
+
+int attendanceThisMemberRecord(int fd);
+
+int deleteChoose(int fd);
+
+int attendanceMonth(int fd);
+
+int addChoose(int fd);
+
+int serverInitSqlite3(void);
+
 struct sockaddr_in serin;
 int sfd, maxfd;
 Emif member;
 fd_set readfds, temp;
 struct sockaddr_in cin;
+sqlite3 *employeedb;
 
 #endif

@@ -2,6 +2,15 @@
 
 int main(int argc, const char *argv[])
 {
+	int ret = -1;
+
+	ret = serverInitSqlite3();
+	if(ret < 0)
+	{
+		printf("initsqlite error\n");
+		return -1;
+	}
+
 	//1.创建套接字
 	sfd = socket(AF_INET, SOCK_STREAM, 0);
 	if(sfd < 0)
@@ -46,7 +55,6 @@ int main(int argc, const char *argv[])
 	FD_SET(0, &readfds);
 	
 
-	int ret = -1;
 	maxfd = sfd;
 	char quit;
 	printf("if you want quit server : enter 'q'\n");
@@ -99,7 +107,6 @@ int main(int argc, const char *argv[])
 				if(newfd < 0)
 				{
 					perror("accept");
-					exit(1);
 				}
 				
 				//打印连接成功的客户端信息
@@ -118,6 +125,7 @@ int main(int argc, const char *argv[])
 	}
 
 	close(sfd);
+	sqlite3_close(employeedb);
 	return 0;
 }
 
