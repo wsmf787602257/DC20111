@@ -572,9 +572,7 @@ int modifySelfInfromation(void)
 	int ret = -1;
 	int choose;
 	char str[40];
-	char sex;
-	int age;
-	double salary;
+	const int idnumber = member.idnumber;
 	if(member.choose == 8)
 	{
 		while(1)
@@ -594,10 +592,126 @@ int modifySelfInfromation(void)
 			case name:
 				printf("Original name : %s\n", member.name);
 				printf("New name >>");
+				memset(str, 0, sizeof(str));
+				memset(&member, 0, sizeof(member));
 				scanf("%s", str);
 				if(getchar()!='\n');
 				strcpy(member.name, str);
 				member.choose = ModifyName;
+				member.idnumber = idnumber;
+				ret = sendAndRecv();
+				if(ret < 0)
+				{
+					return -1;
+				}
+				printf("modify successful\n");
+				break;
+			case username:
+				printf("Original username : %s\n", member.username);
+				printf("New username >>");
+				memset(str, 0, sizeof(str));
+				memset(&member, 0, sizeof(member));
+				scanf("%s", str);
+				if(getchar()!='\n');
+				strcpy(member.username, str);
+				member.choose = ModifyUsername;
+				member.idnumber = idnumber;
+				ret = sendAndRecv();
+				if(ret < 0)
+				{
+					return -1;
+				}
+				printf("modify successful\n");
+				break;
+			case code:
+				printf("Original code : %s\n", member.code);
+				printf("New code >>");
+				memset(str, 0, sizeof(str));
+				memset(&member, 0, sizeof(member));
+				scanf("%s", str);
+				if(getchar()!='\n');
+				strcpy(member.code, str);
+				member.choose = ModifyCode;
+				member.idnumber = idnumber;
+				ret = sendAndRecv();
+				if(ret < 0)
+				{
+					return -1;
+				}
+				printf("modify successful\n");
+				break;
+			case phone:
+				printf("Original phone : %s\n", member.phone);
+				printf("New phone >>");
+				memset(str, 0, sizeof(str));
+				memset(&member, 0, sizeof(member));
+				scanf("%s", str);
+				if(getchar()!='\n');
+				strcpy(member.phone, str);
+				member.choose = ModifyPhone;
+				member.idnumber = idnumber;
+				ret = sendAndRecv();
+				if(ret < 0)
+				{
+					return -1;
+				}
+				printf("modify successful\n");
+				break;
+			case position:
+				printf("Original position : %s\n", member.position);
+				printf("New position >>");
+				memset(str, 0, sizeof(str));
+				memset(&member, 0, sizeof(member));
+				scanf("%s", str);
+				if(getchar()!='\n');
+				strcpy(member.position, str);
+				member.choose = ModifyPosition;
+				member.idnumber = idnumber;
+				ret = sendAndRecv();
+				if(ret < 0)
+				{
+					return -1;
+				}
+				printf("modify successful\n");
+				break;
+			case sex:
+				printf("Original sex : %c\n", member.sex);
+				printf("New sex >>");
+				memset(&member, 0, sizeof(member));
+				scanf("%c", &member.sex);
+				if(getchar()!='\n');
+				member.choose = ModifySex;
+				member.idnumber = idnumber;
+				ret = sendAndRecv();
+				if(ret < 0)
+				{
+					return -1;
+				}
+				printf("modify successful\n");
+				break;
+			case age:
+				printf("Original age : %d\n", member.age);
+				printf("New age >>");
+				memset(&member, 0, sizeof(member));
+				scanf("%d", &member.age);
+				if(getchar()!='\n');
+				member.choose = ModifyAge;
+				member.idnumber = idnumber;
+				ret = sendAndRecv();
+				if(ret < 0)
+				{
+					return -1;
+				}
+				printf("modify successful\n");
+				break;
+			case salary:
+				printf("Original salary : %.2lf\n", member.salary);
+				printf("New salary >>");
+				memset(&member, 0, sizeof(member));
+				scanf("%lf", &member.salary);
+				if(getchar()!='\n');
+				member.choose = ModifySalary;
+				member.idnumber = idnumber;
 				ret = sendAndRecv();
 				if(ret < 0)
 				{
