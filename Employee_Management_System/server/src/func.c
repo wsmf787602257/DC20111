@@ -177,6 +177,21 @@ int sendDataAccordingToChoose(int fd)
 	return 0;
 }
 
+int sendtoclient(int fd)
+{
+	int ret = -1;
+	do
+	{
+		ret = send(fd, &member, sizeof(member), 0);
+	}while(ret<0 && EINTR==errno);
+	if(ret < 0)
+	{
+		perror("send");
+		return -1;
+	}
+	return 0;
+}
+
 int serverInitSqlite3(void)
 {
 	int ret = -1;
@@ -191,16 +206,116 @@ int serverInitSqlite3(void)
 	return 0;
 }
 
-int login(int fd)
+int adminCallback(void* arg,int f_num, char** f_value,char** f_name)
 {
+	int ret;
 	
+	ret = strcmp(member.code, f_value[1]);
+	if(ret == 0)
+	{
+		member.choose = 1;
+		member.identifier = f_value[2][0];
+		strcpy(member.name, f_value[0]);
+		((char*)arg)[0] = 'y';
+	}
+	else{
+		((char*)arg)[0] = 'n';
+	}
 
 	return 0;
 }
 
+int userCallback(void* arg,int f_num, char** f_value,char** f_name)
+{
+	int ret;
+	printf("%s\n", f_value[0]);
+	printf("%s\n", f_value[1]);
+	printf("%s\n", f_value[2]);
+	
+	ret = strcmp(member.code, f_value[2]);
+	if(ret == 0)
+	{
+		member.choose = 1;
+		member.identifier = 'u';
+		strcpy(member.name, f_value[0]);
+		strcpy(member.username, f_value[1]);
+		strcpy(member.code, f_value[2]);
+		member.sex = f_value[3][0];
+		strcpy(member.phone, f_value[4]);
+		member.age = atoi(f_value[5]);
+		strcpy(member.position, f_value[6]);
+		member.salary = atof(f_value[7]);
+		member.idnumber = atoi(f_value[8]);
+		((char*)arg)[0] = 'y';
+	}
+	else{
+		((char*)arg)[0] = 'n';
+	}
+
+	return 0;
+}
+
+int login(int fd)
+{
+	int ret = -1;
+	char identifier = 'n'; 
+
+	memset(sql, 0, sizeof(256));
+	sprintf(sql, "select * from admin where username='%s'", member.username);
+
+	printf("%s\n",sql);
+	ret = sqlite3_exec(employeedb, sql, adminCallback, &identifier, &errmsg);
+	if(ret < 0)
+	{
+		fprintf(stderr, "sqlite3_exec:%s\n", errmsg);
+		return -1;
+	}
+
+	memset(sql, 0, sizeof(256));
+	sprintf(sql, "select * from user where username='%s'", member.username);
+
+	ret = sqlite3_exec(employeedb, sql, userCallback, &identifier, &errmsg);
+	if(ret < 0)
+	{
+		fprintf(stderr, "sqlite3_exec:%s\n", errmsg);
+		return -1;
+	}
+
+	printmember();
+	if(identifier == 'n')
+	{
+		member.choose = -1;
+		strcpy(member.attendanceRecord, "username or code error");
+	}
+	ret = sendtoclient(fd);
+	if(ret < 0)
+	{
+		return -1;
+	}
+
+
+	return 0;
+}
+
+void printmember(void)
+{
+	printf("username : %s\n", member.username);
+	printf("code : %s\n", member.code);
+	printf("sex : %c\n", member.sex);
+	printf("phone : %s\n", member.phone);
+	printf("name : %s\n", member.name);
+	printf("age : %d\n", member.age);
+	printf("position : %s\n", member.position);
+	printf("attendanceRecord : %s\n", member.attendanceRecord);
+	printf("salary : %lf\n", member.salary);
+	printf("choose : %d\n", member.choose);
+	printf("identifier : %c\n", member.identifier);
+	printf("idnumber : %d\n", member.idnumber);
+}
+
 int addMember(int fd)
 {
-	
+
 
 	return 0;
 }
@@ -261,7 +376,7 @@ int deleteChoose(int fd)
 
 int attendanceMonth(int fd)
 {
-		
+
 	return 0;
 }
 

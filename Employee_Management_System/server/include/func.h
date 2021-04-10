@@ -136,11 +136,21 @@ int addChoose(int fd);
 
 int serverInitSqlite3(void);
 
+int adminCallback(void* arg,int f_num, char** f_value,char** f_name);
+
+int userCallback(void* arg,int f_num, char** f_value,char** f_name);
+
+int sendtoclient(int fd);
+
+void printmember(void);
+
 struct sockaddr_in serin;
 int sfd, maxfd;
 Emif member;
 fd_set readfds, temp;
 struct sockaddr_in cin;
+char sql[256];
 sqlite3 *employeedb;
-
+char *errmsg;
+ 
 #endif

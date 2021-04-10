@@ -8,7 +8,7 @@ int main(int argc, const char *argv[])
 	if(ret < 0)
 	{
 		printf("initsqlite error\n");
-		return -1;
+		goto END;
 	}
 
 	//1.创建套接字
@@ -16,7 +16,7 @@ int main(int argc, const char *argv[])
 	if(sfd < 0)
 	{
 		perror("socket");
-		return -1;
+		goto END;
 	}
 
 
@@ -34,7 +34,7 @@ int main(int argc, const char *argv[])
 	if(bind(sfd, (struct sockaddr*)&sin, sizeof(sin))<0)
 	{
 		perror("bind");
-		exit(1);
+		goto END;
 	}
 	printf("bind successful\n");
 
@@ -42,7 +42,7 @@ int main(int argc, const char *argv[])
 	if(listen(sfd, 1024)<0)
 	{
 		perror("listen");
-		exit(1);
+		goto END;
 	}
 
 	//4.接收客户端的连接
@@ -53,7 +53,7 @@ int main(int argc, const char *argv[])
 	FD_ZERO(&temp);
 	FD_SET(sfd, &readfds);
 	FD_SET(0, &readfds);
-	
+
 
 	maxfd = sfd;
 	char quit;
@@ -65,7 +65,7 @@ int main(int argc, const char *argv[])
 		if(ret < 0)
 		{
 			perror("select");
-			exit(1);
+			goto END;
 		}
 		else if(0 == ret)
 		{
@@ -86,17 +86,17 @@ int main(int argc, const char *argv[])
 				//键盘事件
 				int ret = scanf("%c", &quit);
 				while(getchar()!='\n');
-				
+
 				if(ret < 0)
 				{
 					fprintf(stderr, "enter error\n");
 					continue;
 				}
-				
+
 				if(quit == 'q')
 				{
 					printf("server exiting....\n");
-					break;
+					return 0;
 				}
 
 			}
@@ -108,7 +108,7 @@ int main(int argc, const char *argv[])
 				{
 					perror("accept");
 				}
-				
+
 				//打印连接成功的客户端信息
 				cli_info(newfd, cin);
 
@@ -124,6 +124,7 @@ int main(int argc, const char *argv[])
 		}
 	}
 
+END:
 	close(sfd);
 	sqlite3_close(employeedb);
 	return 0;

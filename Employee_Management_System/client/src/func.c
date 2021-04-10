@@ -131,6 +131,7 @@ int mainInterface(void)
 #endif
 		if(member.choose >= 0)
 		{
+			system("clear");
 			printf("welcome back, %s.\n", member.name);
 			return 0;
 		}
@@ -143,7 +144,7 @@ int mainInterface(void)
 			}
 			printf("Username or code error, please entry again\n");
 			printf("You still have %d chances\n", number--);
-			sleep(4);
+			sleep(3);
 			system("clear");
 			continue;
 		}
