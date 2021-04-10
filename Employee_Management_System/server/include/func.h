@@ -22,6 +22,7 @@
 #define SERVER_ADDR "192.168.31.54"
 #define SERVER_PORT 2021
 #define ATTENDANCE_30 102
+#define NOWMEMBER 104
 
 #define SHOWLAST30RECORD 1
 
@@ -132,17 +133,23 @@ int deleteChoose(int fd);
 
 int attendanceMonth(int fd);
 
-int addChoose(int fd);
-
 int serverInitSqlite3(void);
 
 int adminCallback(void* arg,int f_num, char** f_value,char** f_name);
 
 int userCallback(void* arg,int f_num, char** f_value,char** f_name);
 
+int addUserCallback(void* arg,int f_num, char** f_value,char** f_name);
+
+int addAdminCallback(void* arg,int f_num, char** f_value,char** f_name);
+
+int userMaxIdCallback(void* arg,int f_num, char** f_value,char** f_name);
+
 int sendtoclient(int fd);
 
 void printmember(void);
+
+int nowMember(int fd);
 
 struct sockaddr_in serin;
 int sfd, maxfd;
@@ -152,5 +159,6 @@ struct sockaddr_in cin;
 char sql[256];
 sqlite3 *employeedb;
 char *errmsg;
- 
+char **psresult;
+
 #endif

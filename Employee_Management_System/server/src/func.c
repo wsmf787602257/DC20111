@@ -50,6 +50,7 @@ int clientInteraction(int fd)
 	}
 	else
 	{
+		printmember();
 		ret = sendDataAccordingToChoose(fd);
 		if(ret < 0)
 		{
@@ -67,6 +68,8 @@ int sendDataAccordingToChoose(int fd)
 	{
 	case LOGIN:
 		ret = login(fd);
+		printf("login successful\n");
+		memset(&member, 0, sizeof(member));
 		if(ret < 0)
 		{
 			fprintf(stderr, "login error\n");
@@ -74,6 +77,7 @@ int sendDataAccordingToChoose(int fd)
 		break;
 	case AddMember:
 		ret = addMember(fd);
+		memset(&member, 0, sizeof(member));
 		if(ret < 0)
 		{
 			fprintf(stderr, "addmember error\n");
@@ -81,6 +85,7 @@ int sendDataAccordingToChoose(int fd)
 		break;
 	case DeleteMember:
 		ret = deleteMember(fd);
+		memset(&member, 0, sizeof(member));
 		if(ret < 0)
 		{
 			fprintf(stderr, "deletemember error\n");
@@ -88,6 +93,7 @@ int sendDataAccordingToChoose(int fd)
 		break;
 	case ViewSomeoneInfromation:
 		ret = viewSomeoneInformation(fd);
+		memset(&member, 0, sizeof(member));
 		if(ret < 0)
 		{
 			fprintf(stderr, "viewSomeoneInformation error\n");
@@ -95,6 +101,7 @@ int sendDataAccordingToChoose(int fd)
 		break;
 	case ViewSelfInfromation:
 		ret = viewSelfInfromation(fd);
+		memset(&member, 0, sizeof(member));
 		if(ret < 0)
 		{
 			fprintf(stderr, "viewSelfInfromation error\n");
@@ -102,6 +109,7 @@ int sendDataAccordingToChoose(int fd)
 		break;
 	case ModifySelfInformation:
 		ret = modifySelfInformation(fd);
+		memset(&member, 0, sizeof(member));
 		if(ret < 0)
 		{
 			fprintf(stderr, "modifySelfInformation error\n");
@@ -109,6 +117,7 @@ int sendDataAccordingToChoose(int fd)
 		break;
 	case AttendanceSelfRecord:
 		ret = attendanceSelfRecord(fd);
+		memset(&member, 0, sizeof(member));
 		if(ret < 0)
 		{
 			fprintf(stderr, "attendanceSelfRecord error\n");
@@ -116,6 +125,7 @@ int sendDataAccordingToChoose(int fd)
 		break;
 	case Attendance:
 		ret = attendance(fd);
+		memset(&member, 0, sizeof(member));
 		if(ret < 0)
 		{
 			fprintf(stderr, "attendance error\n");
@@ -123,6 +133,7 @@ int sendDataAccordingToChoose(int fd)
 		break;
 	case ModifyThisMember:
 		ret = modifyThisMember(fd);
+		memset(&member, 0, sizeof(member));
 		if(ret < 0)
 		{
 			fprintf(stderr, "modifyThisMember error\n");
@@ -130,6 +141,7 @@ int sendDataAccordingToChoose(int fd)
 		break;
 	case AttendanceThisMemberRecord:
 		ret = attendanceThisMemberRecord(fd);
+		memset(&member, 0, sizeof(member));
 		if(ret < 0)
 		{
 			fprintf(stderr, "attendanceThisMemberRecord error\n");
@@ -139,6 +151,7 @@ int sendDataAccordingToChoose(int fd)
 		break;
 	case DELETE_CHOOSE:
 		ret = deleteChoose(fd);
+		memset(&member, 0, sizeof(member));
 		if(ret < 0)
 		{
 			fprintf(stderr, "deleteChoose error\n");
@@ -146,16 +159,26 @@ int sendDataAccordingToChoose(int fd)
 		break;
 	case ATTENDANCE_30:
 		ret = attendanceMonth(fd);
+		memset(&member, 0, sizeof(member));
 		if(ret < 0)
 		{
 			fprintf(stderr, "attendanceMonth error\n");
 		}
 		break;
 	case ADD_CHOOSE:
-		ret = addChoose(fd);
+		ret = addMember(fd);
+		memset(&member, 0, sizeof(member));
 		if(ret < 0)
 		{
-			fprintf(stderr, "addChoose error\n");
+			fprintf(stderr, "addmember error\n");
+		}
+		break;
+	case NOWMEMBER:
+		ret = nowMember(fd);
+		memset(&member, 0, sizeof(member));
+		if(ret < 0)
+		{
+			fprintf(stderr, "nowMember error\n");
 		}
 		break;
 	default:
@@ -174,6 +197,41 @@ int sendDataAccordingToChoose(int fd)
 		break;
 	}
 
+	return 0;
+} 
+
+int nowMember(int fd)
+{
+	int row;
+	int column;
+	int i,j;
+	int ret;
+	memset(sql, 0, sizeof(256));
+	sprintf(sql, "select name, idnumber from user");
+
+	ret = sqlite3_get_table(employeedb, sql, &psresult, &row, &column, &errmsg);
+	if(ret < 0)
+	{
+		fprintf(stderr, "sqlite3_exec:%s\n", errmsg);
+		sqlite3_free_table(psresult);
+		return -1;
+	}
+	for(i=0;i<row;i++)
+	{
+		for(j=0;j<column;j++)
+		{
+			strcat(member.attendanceRecord, psresult[i+j+2]);
+			strcat(member.attendanceRecord, " ");
+		}
+		strcat(member.attendanceRecord, "\n");
+	}
+	sqlite3_free_table(psresult);
+	ret = sendtoclient(fd);
+	if(ret < 0)
+	{
+		return -1;
+	}
+	
 	return 0;
 }
 
@@ -228,9 +286,6 @@ int adminCallback(void* arg,int f_num, char** f_value,char** f_name)
 int userCallback(void* arg,int f_num, char** f_value,char** f_name)
 {
 	int ret;
-	printf("%s\n", f_value[0]);
-	printf("%s\n", f_value[1]);
-	printf("%s\n", f_value[2]);
 	
 	ret = strcmp(member.code, f_value[2]);
 	if(ret == 0)
@@ -263,7 +318,6 @@ int login(int fd)
 	memset(sql, 0, sizeof(256));
 	sprintf(sql, "select * from admin where username='%s'", member.username);
 
-	printf("%s\n",sql);
 	ret = sqlite3_exec(employeedb, sql, adminCallback, &identifier, &errmsg);
 	if(ret < 0)
 	{
@@ -281,18 +335,17 @@ int login(int fd)
 		return -1;
 	}
 
-	printmember();
 	if(identifier == 'n')
 	{
 		member.choose = -1;
 		strcpy(member.attendanceRecord, "username or code error");
 	}
+	printmember();
 	ret = sendtoclient(fd);
 	if(ret < 0)
 	{
 		return -1;
 	}
-
 
 	return 0;
 }
@@ -310,13 +363,132 @@ void printmember(void)
 	printf("salary : %lf\n", member.salary);
 	printf("choose : %d\n", member.choose);
 	printf("identifier : %c\n", member.identifier);
-	printf("idnumber : %d\n", member.idnumber);
+	printf("idnumber : %d\n\n\n\n\n\n\n\n\n\n", member.idnumber);
+}
+
+int userMaxIdCallback(void* arg,int f_num, char** f_value,char** f_name)
+{
+	member.idnumber = atoi(f_value[0])+1;
+
+	return 0;
 }
 
 int addMember(int fd)
 {
+	int ret;
+	int flags = 1;
+	if(member.identifier == 'm')
+	{
+		memset(sql, 0, sizeof(256));
+		sprintf(sql, "select * from user where name='%s'", member.name);
 
+		ret = sqlite3_exec(employeedb, sql, addUserCallback, &flags, &errmsg);
+		if(ret < 0)
+		{
+			fprintf(stderr, "sqlite3_exec:%s\n", errmsg);
+			return -1;
+		}
+		if(flags == 1)
+		{
+			memset(sql, 0, sizeof(256));
+			sprintf(sql, "select max(idnumber) as maxvalue from user");
 
+			ret = sqlite3_exec(employeedb, sql, userMaxIdCallback, NULL, &errmsg);
+			if(ret < 0)
+			{
+				fprintf(stderr, "sqlite3_exec:%s\n", errmsg);
+				return -1;
+			}
+
+			memset(sql, 0, sizeof(256));
+			sprintf(sql, "insert into user values(%s, %s, %s, %c, %s, %d, %s, %lf, %d)", member.name, \
+					member.username, member.code, member.sex, member.phone, member.age, member.position,\
+					member.salary, member.idnumber);
+
+			printf("%s\n",sql);
+			ret = sqlite3_exec(employeedb, sql, NULL, NULL, &errmsg);
+			if(ret < 0)
+			{
+				fprintf(stderr, "sqlite3_exec:%s\n", errmsg);
+				return -1;
+			}
+			memset(sql, 0, sizeof(256));
+			sprintf(sql, "create table if not exists %shistory(date char, time char)", member.name);
+
+			ret = sqlite3_exec(employeedb, sql, NULL, NULL, &errmsg);
+			if(ret < 0)
+			{
+				fprintf(stderr, "sqlite3_exec:%s\n", errmsg);
+			}
+			memset(sql, 0, sizeof(256));
+			sprintf(sql, "create table if not exists %stoday(date char, time char)", member.name);
+
+			ret = sqlite3_exec(employeedb, sql, NULL, NULL, &errmsg);
+			if(ret < 0)
+			{
+				fprintf(stderr, "sqlite3_exec:%s\n", errmsg);
+			}
+		}
+	}else{
+		memset(sql, 0, sizeof(256));
+		sprintf(sql, "select * from admin where username='%s'", member.username);
+
+		ret = sqlite3_exec(employeedb, sql, addAdminCallback, &flags, &errmsg);
+		if(ret < 0)
+		{
+			fprintf(stderr, "sqlite3_exec:%s\n", errmsg);
+			return -1;
+		}
+		if(flags == 1)
+		{
+			memset(sql, 0, sizeof(256));
+			sprintf(sql, "select max(idnumber) as maxvalue from admin");
+
+			ret = sqlite3_exec(employeedb, sql, userMaxIdCallback, NULL, &errmsg);
+			if(ret < 0)
+			{
+				fprintf(stderr, "sqlite3_exec:%s\n", errmsg);
+				return -1;
+			}
+
+			memset(sql, 0, sizeof(256));
+			sprintf(sql, "insert into admin values(%s, %s, %c, %d)", member.username, member.code, member.identifier, member.idnumber);
+
+			ret = sqlite3_exec(employeedb, sql, NULL, NULL, &errmsg);
+			if(ret < 0)
+			{
+				fprintf(stderr, "sqlite3_exec:%s\n", errmsg);
+				return -1;
+			}
+		}
+	}
+	ret = sendtoclient(fd);
+	if(ret < 0)
+	{
+		return -1;
+	}
+
+	return 0;
+}
+
+int addAdminCallback(void* arg,int f_num, char** f_value,char** f_name)
+{
+	member.choose = -1;
+	strcpy(member.attendanceRecord, "Admin already exist!");
+	*(int*)arg = 0;
+	return 0;
+}
+
+int addUserCallback(void* arg,int f_num, char** f_value,char** f_name)
+{
+	if(strcmp(member.username, f_value[1]) == 0 && strcmp(member.code, f_value[2]) == 0)
+	{
+		member.choose = -1;
+		strcpy(member.attendanceRecord, "User already exist!");
+		*(int*)arg = 0;
+	}else{
+		*(int*)arg = 1;
+	}
 	return 0;
 }
 
@@ -380,8 +552,3 @@ int attendanceMonth(int fd)
 	return 0;
 }
 
-int addChoose(int fd)
-{
-
-	return 0;
-}

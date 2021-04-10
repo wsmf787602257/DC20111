@@ -19,6 +19,7 @@
 #define SERVER_PORT 2021
 #define ATTENDANCE_30 102
 #define SHOWLAST30RECORD 1
+#define NOWMEMBER  104
 
 #define TCPON 1
 #define ADMIN 'a'

@@ -113,7 +113,6 @@ int mainInterface(void)
 		}
 #endif
 
-		member.choose = 0;
 #if TCPON 
 		do{
 			ret = recv(sfd, (Emif *)&member, sizeof(Emif), 0);
@@ -142,7 +141,7 @@ int mainInterface(void)
 				printf("enter error too many!\nSystem exit!\n");
 				return -1;
 			}
-			printf("Username or code error, please entry again\n");
+			printf("%s\n", member.attendanceRecord);
 			printf("You still have %d chances\n", number--);
 			sleep(3);
 			system("clear");
@@ -167,14 +166,15 @@ int adminInterface(void)
 	{
 		printf("-------------------------Admin Mode-------------------------\n");
 		memset(&member, 0, sizeof(member));
-		member.choose = LOGIN;
+		member.choose = NOWMEMBER;
 		ret = sendAndRecv();
 		if(ret < 0)
 		{
 			printf("%s\n", member.attendanceRecord);
 			return -1;
 		}
-		printf("%s", member.attendanceRecord);
+		printf("Now member:\n%s\n", member.attendanceRecord);
+
 		printf("Please enter your choose\n");
 		printf("1.Add member\n");
 		printf("2.Delete member\n");
@@ -200,6 +200,7 @@ int adminInterface(void)
 			ret = addMember();
 			if(ret < 0)
 			{
+			printf("%s\n", member.attendanceRecord);
 				return -1;
 			}
 			break;
@@ -207,6 +208,7 @@ int adminInterface(void)
 			ret = deleteMember();
 			if(ret < 0)
 			{
+			printf("%s\n", member.attendanceRecord);
 				return -1;
 			}
 			break;
@@ -214,6 +216,7 @@ int adminInterface(void)
 			ret = viewSomeoneInfromation();
 			if(ret < 0)
 			{
+			printf("%s\n", member.attendanceRecord);
 				return -1;
 			}
 			break;
@@ -264,6 +267,7 @@ int userInterface(void)
 			ret = viewSelfInfromation();
 			if(ret < 0)
 			{
+			printf("%s\n", member.attendanceRecord);
 				return -1;
 			}
 			break;
@@ -271,6 +275,7 @@ int userInterface(void)
 			ret = modifySelfInfromation();
 			if(ret < 0)
 			{
+			printf("%s\n", member.attendanceRecord);
 				return -1;
 			}
 			break;
@@ -278,6 +283,7 @@ int userInterface(void)
 			ret = attendanceRecord();
 			if(ret < 0)
 			{
+			printf("%s\n", member.attendanceRecord);
 				return -1;
 			}
 			break;
@@ -285,6 +291,7 @@ int userInterface(void)
 			ret = attendance();
 			if(ret < 0)
 			{
+			printf("%s\n", member.attendanceRecord);
 				return -1;
 			}
 			break;
@@ -328,7 +335,7 @@ int viewSomeoneInfromation(void)
 		if(scanf("%d", &member.choose) == 0)
 		{
 			printf("System exiting....\n");
-			return -1;
+			returnte table if not exists stu -1;
 		}
 		if(getchar()!='\n');
 		if(member.choose != 0)
@@ -337,17 +344,19 @@ int viewSomeoneInfromation(void)
 		}
 		switch(member.choose)
 		{
-		case ModifyThisMember:
+		case ModifyThisMember:create table if not exists stucreate table if not exists stu
 			ret = modifySomeoneInfromation();
 			if(ret < 0)
 			{
+			printf("%s\n", member.attendanceRecord);
 				return -1;
 			}
 			break;
 		case AttendanceThisMemberRecord:
-			ret = attendanceRecord();
+			ret = attendanceRecord();create table if not exists stucreate table if not exists stu
 			if(ret < 0)
 			{
+			printf("%s\n", member.attendanceRecord);
 				return -1;
 			}
 			break;
@@ -359,7 +368,7 @@ int viewSomeoneInfromation(void)
 			{
 				system("clear");
 				return 0;
-			}
+			}create table if not exists stu
 			break;
 		default:
 			printf("enter error, please try again\n");
@@ -371,7 +380,7 @@ int viewSomeoneInfromation(void)
 
 int returnMemberInfromation(const char* name)
 {
-	int ret = -1;
+	int ret = -1;create table if not exists stu
 	Numorname non;
 
 	non = numberOrName(name);
@@ -380,7 +389,7 @@ int returnMemberInfromation(const char* name)
 		member.idnumber = non.idnumber;
 		do{
 			ret = send(sfd, (void*)&member, sizeof(Emif), 0);
-		}while(ret < 0 && errno == EINTR);
+		}while(ret < 0 && errno == EINTR);create table if not exists stu
 		if(ret < 0)
 		{
 			perror("write");
@@ -395,7 +404,7 @@ int returnMemberInfromation(const char* name)
 		if(ret < 0)
 		{
 			perror("write");
-			return -1;
+			return -1;create table if not exists stu
 		}
 	}
 
@@ -432,6 +441,7 @@ int sendAndRecv(void)
 		return -1;
 	}
 
+	printf("send successful\n");
 	memset(&member, 0, sizeof(Emif));
 	do{
 		ret = recv(sfd, (Emif *)&member, sizeof(Emif), 0);
@@ -446,6 +456,7 @@ int sendAndRecv(void)
 		fprintf(stderr, "server:%s shutdown!\n", SERVER_ADDR);
 		return -1;
 	}
+	printf("recv successful\n");
 	return 0;
 }
 
