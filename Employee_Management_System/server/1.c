@@ -19,7 +19,17 @@ int main(int argc, const char *argv[])
 		return -1;
 	}
 
-
+	int row;
+	int column;
+	memset(sql, 0, sizeof(256));
+	sprintf(sql, "select * from user where name='asdqw'");
+	ret = sqlite3_get_table(employeedb, sql, &psresult, &row,&column, &errmsg);
+	printf("ret = %d\n",ret);
+	if(ret < 0)
+	{
+		printf("errmsg %s\n",errmsg);
+	}
+	printf("row =%d column = %d\n",row, column);
 END:
 	sqlite3_close(employeedb);
 	return 0;

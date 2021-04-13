@@ -155,7 +155,7 @@ void nowtime(void)
 	time_t t;
 	time(&t);
 	struct tm *nowtime = localtime(&t);
-	printf("本地时间为%d年%d月%d日 星期%d %d:%d:%d\n\n", nowtime->tm_year+1900, nowtime->tm_mon+1, nowtime->tm_mday, nowtime->tm_wday+1, nowtime->tm_hour, nowtime->tm_min, nowtime->tm_sec);
+	printf("localtime %dyear%dmonth%dday week%d %d:%d:%d\n\n", nowtime->tm_year+1900, nowtime->tm_mon+1, nowtime->tm_mday, nowtime->tm_wday+1, nowtime->tm_hour, nowtime->tm_min, nowtime->tm_sec);
 }
 
 int adminInterface(void)
@@ -164,6 +164,7 @@ int adminInterface(void)
 	char loginChoose;
 	while(1)
 	{
+			system("clear");
 		printf("-------------------------Admin Mode-------------------------\n");
 		memset(&member, 0, sizeof(member));
 		member.choose = NOWMEMBER;
@@ -200,24 +201,24 @@ int adminInterface(void)
 			ret = addMember();
 			if(ret < 0)
 			{
-			printf("%s\n", member.attendanceRecord);
 				return -1;
+			printf("%s\n", member.attendanceRecord);
 			}
 			break;
 		case DeleteMember:
 			ret = deleteMember();
 			if(ret < 0)
 			{
-			printf("%s\n", member.attendanceRecord);
 				return -1;
+			printf("%s\n", member.attendanceRecord);
 			}
 			break;
 		case ViewSomeoneInfromation:
 			ret = viewSomeoneInfromation();
 			if(ret < 0)
 			{
-			printf("%s\n", member.attendanceRecord);
 				return -1;
+			printf("%s\n", member.attendanceRecord);
 			}
 			break;
 		case ReturnToPreviousMenu:
@@ -242,6 +243,7 @@ int userInterface(void)
 	char loginChoose;
 	while(1)
 	{
+		system("clear");
 		printf("-------------------------User Mode-------------------------\n");
 		printf("Please enter your choose\n");
 		printf("1.View self member\n");
@@ -267,7 +269,6 @@ int userInterface(void)
 			ret = viewSelfInfromation();
 			if(ret < 0)
 			{
-			printf("%s\n", member.attendanceRecord);
 				return -1;
 			}
 			break;
@@ -275,7 +276,6 @@ int userInterface(void)
 			ret = modifySelfInfromation();
 			if(ret < 0)
 			{
-			printf("%s\n", member.attendanceRecord);
 				return -1;
 			}
 			break;
@@ -283,7 +283,6 @@ int userInterface(void)
 			ret = attendanceRecord();
 			if(ret < 0)
 			{
-			printf("%s\n", member.attendanceRecord);
 				return -1;
 			}
 			break;
@@ -291,7 +290,6 @@ int userInterface(void)
 			ret = attendance();
 			if(ret < 0)
 			{
-			printf("%s\n", member.attendanceRecord);
 				return -1;
 			}
 			break;
@@ -325,17 +323,24 @@ int viewSomeoneInfromation(void)
 
 	while(1)
 	{
-		returnMemberInfromation(name);
+			system("clear");
+		ret = returnMemberInfromation(name);
+		if(ret < 0)
+		{
+			printf("%s\n", member.attendanceRecord);
+			sleep(3);
+			return 0;
+		}
 		printf("-------------------------Member Infromation Mode-------------------------\n");
 		printf("Please enter your choose\n");
-		printf("1.MoOriginal nameOriginal namedify this member\n");
+		printf("1.Modify this member\n");
 		printf("2.Attendance this member record\n");
 		printf("0.Return to the previous menu\n");
 		printf("Enter 'q' to exit system\n>>");
 		if(scanf("%d", &member.choose) == 0)
 		{
 			printf("System exiting....\n");
-			returnte table if not exists stu -1;
+			return -1;
 		}
 		if(getchar()!='\n');
 		if(member.choose != 0)
@@ -344,20 +349,18 @@ int viewSomeoneInfromation(void)
 		}
 		switch(member.choose)
 		{
-		case ModifyThisMember:create table if not exists stucreate table if not exists stu
+		case ModifyThisMember:
 			ret = modifySomeoneInfromation();
 			if(ret < 0)
 			{
 			printf("%s\n", member.attendanceRecord);
-				return -1;
 			}
 			break;
 		case AttendanceThisMemberRecord:
-			ret = attendanceRecord();create table if not exists stucreate table if not exists stu
+			ret = attendanceRecord();
 			if(ret < 0)
 			{
 			printf("%s\n", member.attendanceRecord);
-				return -1;
 			}
 			break;
 		case ReturnToPreviousMenu:
@@ -368,7 +371,7 @@ int viewSomeoneInfromation(void)
 			{
 				system("clear");
 				return 0;
-			}create table if not exists stu
+			}
 			break;
 		default:
 			printf("enter error, please try again\n");
@@ -380,16 +383,18 @@ int viewSomeoneInfromation(void)
 
 int returnMemberInfromation(const char* name)
 {
-	int ret = -1;create table if not exists stu
+	int ret = -1;
 	Numorname non;
+	
 
+	member.choose = RETURNINFROMATION;
 	non = numberOrName(name);
 	if(non.flag == ISIDNUMBER)
 	{
 		member.idnumber = non.idnumber;
 		do{
 			ret = send(sfd, (void*)&member, sizeof(Emif), 0);
-		}while(ret < 0 && errno == EINTR);create table if not exists stu
+		}while(ret < 0 && errno == EINTR);
 		if(ret < 0)
 		{
 			perror("write");
@@ -404,7 +409,7 @@ int returnMemberInfromation(const char* name)
 		if(ret < 0)
 		{
 			perror("write");
-			return -1;create table if not exists stu
+			return -1;
 		}
 	}
 
@@ -422,9 +427,13 @@ int returnMemberInfromation(const char* name)
 		fprintf(stderr, "server:%s shutdown!\n", SERVER_ADDR);
 		return -1;
 	}
+	if(member.choose < 0)
+	{
+		return -1;
+	}
 
-	printf("name:%10s idnumber:%d sex:%c", member.name, member.idnumber, member.sex);
-	printf("age:%d phone:%11s position:%10s salary:%6.2lf\n", member.age, member.phone,member.position, member.salary);
+	printf("name:%s idnumber:%d sex:%c", member.name, member.idnumber, member.sex);
+	printf(" age:%d phone:%11s position:%s salary:%6.2lf\n", member.age, member.phone,member.position, member.salary);
 
 	return 0;
 }
@@ -441,7 +450,6 @@ int sendAndRecv(void)
 		return -1;
 	}
 
-	printf("send successful\n");
 	memset(&member, 0, sizeof(Emif));
 	do{
 		ret = recv(sfd, (Emif *)&member, sizeof(Emif), 0);
@@ -456,31 +464,33 @@ int sendAndRecv(void)
 		fprintf(stderr, "server:%s shutdown!\n", SERVER_ADDR);
 		return -1;
 	}
-	printf("recv successful\n");
 	return 0;
 }
 
 int deleteMember()
 {
-	char choose;
+	Numorname non;
+	char choose1;
 	int ret;
 
 	char name[40] = "";
 	printf("Please enter the name or idnumber of the person you want to delete\n");
 	scanf("%s", name);
 	system("clear");
-	ret = returnMemberInfromation(name);
-	if(ret < 0)
-	{
-		return -1;
-	}
-	printf("Are you sure delete this member?(Y/N)\n");
-	scanf("%c", &choose);
+
+	non = numberOrName(name);
+	strcpy(member.name, non.str);
+	member.idnumber = non.idnumber;
+
+	printf("Are you sure delete this member?(Y/N)\n>>");
 	if(getchar()!='\n');
-	if(choose == 'y' || choose == 'Y')
+	choose1 = getchar();
+	if(getchar()!='\n');
+	printf("%c\n", choose1);
+	if(choose1 == 'y' || choose1 == 'Y')
 	{
+		printf("lalala\n");
 		system("clear");
-		member.choose = DELETE_CHOOSE;
 		ret = sendAndRecv();
 		if(ret < 0)
 		{
@@ -509,6 +519,7 @@ int addMember()
 	int ret;
 	int choose = 0;
 	while(1){
+			system("clear");
 		printf("Do you want to add members or admin\n");
 		printf("1.member\n2.admin\n");
 		printf("0.Return to the previous menu\n");
@@ -527,9 +538,17 @@ int addMember()
 			printf("member name:\n>>");
 			scanf("%s", member.name);
 			if(getchar()!='\n');
-			printf("member age:\n>>");
-			scanf("%d", &member.age);
+
+			do{
+				printf("member age:\n>>");
+				ret = scanf("%d", &member.age);
 			if(getchar()!='\n');
+				if(ret == 0)
+				{
+					printf("enter error,please try again\n");
+				}
+			}while(ret == 0);
+
 			printf("member sex:\n>>");
 			scanf("%c", &member.sex);
 			if(getchar()!='\n');
@@ -545,9 +564,17 @@ int addMember()
 			printf("member position:\n>>");
 			scanf("%s", member.position);
 			if(getchar()!='\n');
-			printf("member salary:\n>>");
-			scanf("%lf", &member.salary);
+
+			do{
+				printf("member salary:\n>>");
+				ret = scanf("%lf", &member.salary);
 			if(getchar()!='\n');
+				if(ret == 0)
+				{
+					printf("enter error,please try again\n");
+				}
+			}while(ret == 0);
+
 			member.choose = ADD_CHOOSE; 
 			member.identifier = 'm';
 
@@ -607,30 +634,45 @@ int addMember()
 	}
 }
 
+int todayAttendance(void)
+{
+	int ret;
+	member.choose = AttendanceThisMemberRecord;
+	ret = sendAndRecv();
+	if(ret < 0)
+	{
+		return -1;	
+	}
+
+	return 0;
+}
+
 int attendanceRecord(void)
 {
 	char loginChoose;
 	int choose;
 	int ret = -1;
-	printf("********Today's attendance record*********\n");
-	printf("%s", member.attendanceRecord);
 	while(1)
 	{
+	system("clear");
+	ret = todayAttendance();
+	if(ret < 0)
+	{
+		return -1;
+	}
+	printf("********Today's attendance record*********\n");
+	printf("%s", member.attendanceRecord);
 		printf("Please enter your choose\n");
 		printf("1.Show the attendance record of the last 30 days\n");
 		printf("0.Return to the previous menu\n");
 		printf("Enter 'q' to exit system\n>>");
-		if(scanf("%d", &member.choose) == 0)
+		if(scanf("%d", &choose) == 0)
 		{
 			printf("System exiting....\n");
 			return -1;
 		}
 		if(getchar()!='\n');
-		if(member.choose != 0)
-		{
-			member.choose += 7;
-		}
-		switch(member.choose)
+		switch(choose)
 		{
 		case SHOWLAST30RECORD:
 			member.choose = ATTENDANCE_30;
@@ -640,6 +682,7 @@ int attendanceRecord(void)
 			printf("%s\n", member.attendanceRecord);
 				return -1;
 			}
+			system("clear");
 			printf("********Last 30 days attendance record*********\n");
 			printf("%s", member.attendanceRecord);
 			printf("Please enter your choose\n");
@@ -676,6 +719,7 @@ int viewSelfInfromation()
 	ret = returnMemberInfromation(member.name);
 	if(ret < 0)
 	{
+		printf("%s\n", member.attendanceRecord);
 		return -1;
 	}
 	printf("Please enter your choose\n");
@@ -696,10 +740,9 @@ int modifySelfInfromation(void)
 	int choose;
 	char str[40];
 	const int idnumber = member.idnumber;
-	if(member.choose == 8)
-	{
 		while(1)
 		{
+			system("clear");
 			printf("Please enter the selection to determine the information you want to modify\n\n");
 			printf("1.username 2.code 3.phone\n");
 			printf("0.Return to the previous menu\n");
@@ -712,7 +755,7 @@ int modifySelfInfromation(void)
 			if(getchar()!='\n');
 			switch(choose)
 			{
-			case username:
+			case username-4:
 				printf("Original username : %s\n", member.username);
 				printf("New username >>");
 				memset(str, 0, sizeof(str));
@@ -729,8 +772,10 @@ int modifySelfInfromation(void)
 					return -1;
 				}
 				printf("modify successful\n");
+				sleep(2);
+				system("clear");
 				break;
-			case code:
+			case code-4:
 				printf("Original code : %s\n", member.code);
 				printf("New code >>");
 				memset(str, 0, sizeof(str));
@@ -747,8 +792,10 @@ int modifySelfInfromation(void)
 					return -1;
 				}
 				printf("modify successful\n");
+				sleep(2);
+				system("clear");
 				break;
-			case phone:
+			case phone-4:
 				printf("Original phone : %s\n", member.phone);
 				printf("New phone >>");
 				memset(str, 0, sizeof(str));
@@ -765,6 +812,8 @@ int modifySelfInfromation(void)
 					return -1;
 				}
 				printf("modify successful\n");
+				sleep(2);
+				system("clear");
 				break;
 			case ReturnToPreviousMenu:
 				printf("Are you sure you want to return to the previous menu?(Y/N)\n");
@@ -781,7 +830,6 @@ int modifySelfInfromation(void)
 				break;
 			}
 		}
-	}
 	return 0;
 }
 
@@ -792,10 +840,9 @@ int modifySomeoneInfromation(void)
 	int choose;
 	char str[40];
 	const int idnumber = member.idnumber;
-	if(member.choose == 8)
-	{
 		while(1)
 		{
+			system("clear");
 			printf("Please enter the selection to determine the information you want to modify\n\n");
 			printf("1.name 2.age 3.sex 4.salary\n5.username 6.code 7.phone 8.position\n");
 			printf("0.Return to the previous menu\n");
@@ -825,6 +872,8 @@ int modifySomeoneInfromation(void)
 					return -1;
 				}
 				printf("modify successful\n");
+				sleep(2);
+				system("clear");
 				break;
 			case username:
 				printf("Original username : %s\n", member.username);
@@ -843,6 +892,8 @@ int modifySomeoneInfromation(void)
 					return -1;
 				}
 				printf("modify successful\n");
+				sleep(2);
+				system("clear");
 				break;
 			case code:
 				printf("Original code : %s\n", member.code);
@@ -861,6 +912,8 @@ int modifySomeoneInfromation(void)
 					return -1;
 				}
 				printf("modify successful\n");
+				sleep(2);
+				system("clear");
 				break;
 			case phone:
 				printf("Original phone : %s\n", member.phone);
@@ -879,6 +932,8 @@ int modifySomeoneInfromation(void)
 					return -1;
 				}
 				printf("modify successful\n");
+				sleep(2);
+				system("clear");
 				break;
 			case position:
 				printf("Original position : %s\n", member.position);
@@ -897,6 +952,8 @@ int modifySomeoneInfromation(void)
 					return -1;
 				}
 				printf("modify successful\n");
+				sleep(2);
+				system("clear");
 				break;
 			case sex:
 				printf("Original sex : %c\n", member.sex);
@@ -913,6 +970,8 @@ int modifySomeoneInfromation(void)
 					return -1;
 				}
 				printf("modify successful\n");
+				sleep(2);
+				system("clear");
 				break;
 			case age:
 				printf("Original age : %d\n", member.age);
@@ -928,6 +987,8 @@ int modifySomeoneInfromation(void)
 					return -1;
 				}
 				printf("modify successful\n");
+				sleep(2);
+				system("clear");
 				break;
 			case salary:
 				printf("Original salary : %.2lf\n", member.salary);
@@ -943,6 +1004,8 @@ int modifySomeoneInfromation(void)
 					return -1;
 				}
 				printf("modify successful\n");
+				sleep(2);
+				system("clear");
 				break;
 			case ReturnToPreviousMenu:
 				printf("Are you sure you want to return to the previous menu?(Y/N)\n");
@@ -959,7 +1022,6 @@ int modifySomeoneInfromation(void)
 				break;
 			}
 		}
-	}
 	return 0;
 }
 
@@ -971,8 +1033,6 @@ Numorname numberOrName(const char* str)
 	char *na = name;
 	char *nu = number;
 	Numorname non;
-	printf("%s\n",str);
-	printf("%d\n",strlen(str));
 	for(i=0;i<strlen(str);i++)
 	{
 		if(str[i] >= '0' && str[i] <= '9')

@@ -20,6 +20,7 @@
 #define ATTENDANCE_30 102
 #define SHOWLAST30RECORD 1
 #define NOWMEMBER  104
+#define RETURNINFROMATION 105
 
 #define TCPON 1
 #define ADMIN 'a'
@@ -144,6 +145,8 @@ int attendance(void);
 
 //发送并接受服务器的数据
 int sendAndRecv(void);
+
+int todayAttendance(void);
 
 struct sockaddr_in serin;
 int sfd;

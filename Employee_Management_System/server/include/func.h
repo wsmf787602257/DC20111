@@ -23,6 +23,7 @@
 #define SERVER_PORT 2021
 #define ATTENDANCE_30 102
 #define NOWMEMBER 104
+#define RETURNINFROMATION 105
 
 #define SHOWLAST30RECORD 1
 
@@ -121,13 +122,9 @@ int viewSelfInfromation(int fd);
 
 int modifySelfInformation(int fd);
 
-int attendanceSelfRecord(int fd);
-
 int attendance(int fd);
 
 int modifyThisMember(int fd);
-
-int attendanceThisMemberRecord(int fd);
 
 int deleteChoose(int fd);
 
@@ -151,6 +148,30 @@ void printmember(void);
 
 int nowMember(int fd);
 
+int modifyName(int fd);
+
+int modifyAge(int fd);
+
+int modifySex(int fd);
+
+int modifySalary(int fd);
+
+int modifyUsername(int fd);
+
+int modifyPhone(int fd);
+
+int modifyCode(int fd);
+
+int modifyPosition(int fd);
+
+char* timeDate(void);
+
+char* timeHour(void);
+
+int	update_history(char* date, char* time);
+
+int todayAttendance(int fd);
+
 struct sockaddr_in serin;
 int sfd, maxfd;
 Emif member;
@@ -160,5 +181,7 @@ char sql[256];
 sqlite3 *employeedb;
 char *errmsg;
 char **psresult;
+time_t t;
+struct tm *nowtime;
 
 #endif
